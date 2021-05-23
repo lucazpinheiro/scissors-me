@@ -1,18 +1,27 @@
-const fs = require('fs')
-const youtubedl = require('youtube-dl')
+const readline = require('readline')
+const ytdl = require('ytdl-core')
+const ffmpeg = require('fluent-ffmpeg')
 
-const video = youtubedl('http://www.youtube.com/watch?v=90AiXO1pAiA',
-  // Optional arguments passed to youtube-dl.
-  ['--format=18'],
-  // Additional options can be given for calling `child_process.execFile()`.
-  { cwd: __dirname })
+const url = 'https://www.youtube.com/watch?v=P6EFy2cADNM'
 
-// Will be called when the download starts.
-video.on('info', function(info) {
-  console.log('Download started')
-  console.log('filename: ' + info._filename)
-  console.log('size: ' + info.size)
-})
+async function getVideo (url) {
+  const [, id] = url.split('?v=')
+  let stream = ytdl(id, {
+    quality: 'highestaudio',
+  });
+  
+  let start = Date.now();
+  ffmpeg(stream)
+    .audioBitrate(128)
+    .save(`${__dirname}/${id}.mp3`)
+    .on('progress', p => {
+      readline.cursorTo(process.stdout, 0);
+      process.stdout.write(`${p.targetSize}kb downloaded`);
+    })
+    .on('end', () => {
+      console.log(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
+    });
+}
 
-video.pipe(fs.createWriteStream('myvideo.mp4'))
 
+exports.getVideo = getVideo
