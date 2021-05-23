@@ -1,10 +1,5 @@
-const yt = require('./ytDownloader')
-const { audioCutter } = require('./cutter');
+const { ScissorsMe } = require('./ScissorsMe');
 
-const url = 'https://www.youtube.com/watch?v=P6EFy2cADNM'
-
-const [, id] = url.split('?v=')
-
-
-yt.getVideo(id, audioCutter, 5)
-
+new ScissorsMe('https://www.youtube.com/watch?v=P6EFy2cADNM');
+new ScissorsMe('https://www.youtube.com/watch?v=OaeVieQRHRs', 9, 13);
+new ScissorsMe('https://www.youtube.com/watch?v=QWHEefBwdV4', 18);
