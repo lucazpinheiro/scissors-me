@@ -2,7 +2,7 @@ const readline = require('readline')
 const ytdl = require('ytdl-core')
 const ffmpeg = require('fluent-ffmpeg')
 
-async function getVideo (id) {
+async function getVideo (id, callback) {
   let stream = ytdl(id, {
     quality: 'highestaudio',
   });
@@ -10,6 +10,9 @@ async function getVideo (id) {
   ffmpeg(stream)
     .audioBitrate(128)
     .save(`${__dirname}/temp/${id}.mp3`)
+    .on('end', () => {
+      callback(id, 5)
+    });
 }
 
 
