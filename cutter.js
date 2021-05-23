@@ -2,12 +2,12 @@ const cutter = require("mp3-cutter");
 
 /**
  * Cut audio given a start until the expect end.
- * @param { string } audioSrc needs exist on './audio' folder
+ * @param { string } audioSrc needs exist on './temp' folder
  * @param { number } start value in seconds.
  * @param { number } end value in seconds. (if don't pass any value, will get duration of the audio)
  */
-function audioCutter(audioSrc, start, end) {
-    if (!audioSrc && !start) {
+function audioCutter(audioSrc, start = 0, end) {
+    if (!audioSrc) {
         throw Error("Missing parameters");
     }
 
@@ -16,8 +16,8 @@ function audioCutter(audioSrc, start, end) {
     }
 
     const options = {
-        src: `./audio/${audioSrc}`,
-        target: `./cutted/cut-${audioSrc}`,
+        src: `${__dirname}/temp/${audioSrc}.mp3`,
+        target: `${__dirname}/memes_audio/${audioSrc}.mp3`,
         start: start,
     };
 

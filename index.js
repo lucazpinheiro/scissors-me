@@ -5,4 +5,5 @@ const url = 'https://www.youtube.com/watch?v=P6EFy2cADNM'
 
 const [, id] = url.split('?v=')
 
-yt.getVideo(url)
+yt.getVideo(id)
+audioCutter(id, 5)
