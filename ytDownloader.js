@@ -1,4 +1,3 @@
-const readline = require('readline')
 const ytdl = require('ytdl-core')
 const ffmpeg = require('fluent-ffmpeg')
 
