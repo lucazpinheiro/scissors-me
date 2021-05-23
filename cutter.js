@@ -1,6 +1,12 @@
 const cutter = require("mp3-cutter");
 
-function cutAudio(audioSrc, start, end) {
+/**
+ * Cut audio given a start until the expect end.
+ * @param { string } audioSrc needs exist on './audio' folder
+ * @param { number } start value in seconds.
+ * @param { number } end value in seconds. (if don't pass any value, will get duration of the audio)
+ */
+function audioCutter(audioSrc, start, end) {
     if (!audioSrc && !start) {
         throw Error("Missing parameters");
     }
@@ -22,4 +28,4 @@ function cutAudio(audioSrc, start, end) {
     cutter.cut(options);
 }
 
-cutAudio("teste.mp3", 10, 5);
+exports.audioCutter = audioCutter;
