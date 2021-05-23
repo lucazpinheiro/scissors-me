@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "sudo rm -rf node_modules package-lock.json ./temp/* ./memes_audio/*"
+    "clean": "sudo rm -rf node_modules package-lock.json ./temp/* ./memes_audio/*",
+    "setup": "npm i && mkdir temp memes_audio"
   },
   "author": "",
   "license": "ISC",
