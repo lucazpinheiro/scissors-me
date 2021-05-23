@@ -3,19 +3,13 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(ffmpegPath);
 
-const { existsSync, mkdirSync } = require("fs");
+const { existsSync, mkdirSync, unlink } = require("fs");
 const ytdl = require("ytdl-core");
 const { cut } = require("mp3-cutter");
 
 
 
 class ScissorsMe {
-  _tempPath = `${__dirname}/temp`;
-  _memesPath = `${__dirname}/memes_audio`;
-  _id = null;
-  _startTime = null;
-  _endTime = null;
-
   constructor(url, start = 0, end) {
     if (!url) {
       console.error("Missing `URL` parameter.");
@@ -24,6 +18,9 @@ class ScissorsMe {
     this._id = url.split("?v=")[1];
     this._startTime = start;
     this._endTime = end;
+    this._tempPath = `${__dirname}/temp`;
+    this._memesPath = `${__dirname}/memes_audio`;
+
 
     this.getVideo();
   }
@@ -76,6 +73,7 @@ class ScissorsMe {
     }
 
     cut(options);
+    unlink(options.src, (err) => { if (err) throw err });
   }
 }
 
