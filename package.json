@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "mp3-cutter": "^1.0.6",
     "youtube-dl": "^3.5.0"
   }
 }
