@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "sudo rm -rf node_modules package-lock.json ./temp/* ./memes_audio/*",
     "setup": "npm i && mkdir temp memes_audio"
@@ -14,7 +14,12 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "fluent-ffmpeg": "^2.1.2",
-    "ytdl-core": "^4.8.0",
-    "mp3-cutter": "^1.0.6"
+    "mp3-cutter": "^1.0.6",
+    "ytdl-core": "^4.8.2"
+  },
+  "devDependencies": {
+    "@types/ffmpeg-installer__ffmpeg": "^1.0.0",
+    "@types/fluent-ffmpeg": "^2.1.17",
+    "typescript": "^4.3.2"
   }
 }

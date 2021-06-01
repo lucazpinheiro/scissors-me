@@ -1,4 +1,4 @@
-const { ScissorsMe } = require('./ScissorsMe');
+import { ScissorsMe } from './ScissorsMe'
 
 new ScissorsMe('https://www.youtube.com/watch?v=P6EFy2cADNM');
 new ScissorsMe('https://www.youtube.com/watch?v=OaeVieQRHRs', 9, 13);
