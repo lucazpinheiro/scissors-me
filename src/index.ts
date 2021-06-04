@@ -10,8 +10,8 @@ new ScissorsMe({
 new ScissorsMe({
   url: "https://www.youtube.com/watch?v=OaeVieQRHRs",
   alias: "banido",
-  start: 10,
-  end: 8
+  start: 9,
+  end: 13
 });
 
 new ScissorsMe({

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run clean:audio && node ./dist/index.js",
-    "start:tsc": "npx tsc ./src/index.ts && node ./dist/index.js",
+    "start:tsc": "npx tsc && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "sudo rm -rf node_modules package-lock.json",
     "clean:dist": "rm -rf ./dist",
@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/ffmpeg-installer__ffmpeg": "^1.0.0",
     "@types/fluent-ffmpeg": "^2.1.17",
+    "@types/node": "^15.12.0",
     "typescript": "^4.3.2"
   }
 }

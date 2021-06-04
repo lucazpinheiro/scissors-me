@@ -92,7 +92,7 @@ export class ScissorsMe {
     }
 
     cut(cutOptions);
-    unlink(this._srcPath, (err) => {
+    unlink(this._srcPath, (err: any) => {
       if (err) throw err;
     });
   }
