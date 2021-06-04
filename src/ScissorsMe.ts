@@ -1,81 +1,99 @@
-import { path } from '@ffmpeg-installer/ffmpeg'
-import ffmpeg, { FfmpegCommandOptions } from 'fluent-ffmpeg'
+import { path } from "@ffmpeg-installer/ffmpeg";
+import ffmpeg, { FfmpegCommandOptions } from "fluent-ffmpeg";
 ffmpeg.setFfmpegPath(path);
 
-import { existsSync, mkdirSync, unlink } from 'fs'
-import ytdl from 'ytdl-core'
-import { cut } from 'mp3-cutter'
+import { existsSync, mkdirSync, unlink } from "fs";
+import { Readable } from "stream";
+import ytdl from "ytdl-core";
+import { cut } from "mp3-cutter";
+
+interface IOptions {
+  url: string;
+  alias: string;
+  start?: Number;
+  end?: Number;
+}
 
 export class ScissorsMe {
-  private URL: string;
-  private startTime: Number;
-  private endTime: Number | undefined;
-  private _tempPath: string = `${__dirname}/temp`;
-  private _memesPath: string = `${__dirname}/memes_audio`;
+  private options: IOptions;
+  private _audioPath: string = `${__dirname}/mp3`;
+  private _tmpPath: string = `${__dirname}/tmp`;
+  private _srcPath: string;
 
-  constructor(url: string, start: Number = 0, end?: Number) {
-    if (!url) {
-      throw new Error("Missing `URL` parameter.");
+  constructor(options: IOptions) {
+    if (!options.url || !options.alias) {
+      throw new Error(`Missing ${options.url ? "ALIAS" : "URL"} parameter.`);
     }
 
-    this.URL = url.split("?v=")[1];
-    this.startTime = start;
-    this.endTime = end;
+    if (!ytdl.validateURL(options.url)) {
+      throw new Error(`Not a valid URL: ${options.url}`);
+    }
 
-    this.makeDirectories();
-    this.getVideo();
+    this.options = options;
+    this._srcPath = `${this._tmpPath}/${options.alias}.mp3`;
+    this._downloadAudio();
   }
 
-  makeDirectories() {
-    if (!existsSync(this._tempPath)) {
-      mkdirSync(this._tempPath);
+  private _makeDirectories() {
+    if (!existsSync(this._audioPath)) {
+      mkdirSync(this._audioPath);
     }
 
-    if (!existsSync(this._memesPath)) {
-      mkdirSync(this._memesPath);
+    if (!existsSync(this._tmpPath)) {
+      mkdirSync(this._tmpPath);
     }
   }
 
-  async getVideo() {
+  private async _downloadAudio() {
     try {
-      let stream: any = await ytdl(this.URL, {
+      const stream: Readable = await ytdl(this.options.url, {
         quality: "highestaudio",
       });
 
-      this.saveAudio(stream);
+      this._saveAudio(stream);
     } catch (error) {
-      console.error(error);
+      throw new Error("Erro no download");
     }
   }
 
-  async saveAudio(stream: FfmpegCommandOptions) {
-    await ffmpeg(stream)
-      .audioBitrate(128)
-      .save(`${this._tempPath}/${this.URL}.mp3`)
-      .on('end', () => {
-        this.audioCutter();
-      });
+  private async _saveAudio(stream: Readable) {
+    this._makeDirectories();
+    try {
+      await ffmpeg(stream)
+        .audioBitrate(128)
+        .save(this._srcPath)
+        .on("end", () => {
+          this._audioCutter();
+        });
+    } catch {
+      new Error("Falha ao salvar");
+    }
   }
 
-  /**
-   * Cut audio given a start and end time.
-   */
-  audioCutter() {
-    if (this.endTime && this.startTime > this.endTime) {
-      [this.startTime, this.endTime] = [this.endTime, this.startTime];
+  private _audioCutter() {
+    if (!existsSync(this._srcPath)) {
+      return;
+    }
+    
+    let { start = 0, end, alias } = this.options;
+
+    if (end && start > end) {
+      [start, end] = [end, start];
     }
 
-    const options = {
-      src: `${this._tempPath}/${this.URL}.mp3`,
-      target: `${this._memesPath}/${this.URL}.mp3`,
-      start: this.startTime,
+    const cutOptions = {
+      target: `${this._audioPath}/${alias}.mp3`,
+      src: this._srcPath,
+      start: start,
     };
 
-    if (this.endTime) {
-      Object.defineProperty(options, 'end', { value: this.endTime })
+    if (end) {
+      Object.defineProperty(cutOptions, "end", { value: end });
     }
 
-    cut(options);
-    unlink(options.src, (err) => { if (err) throw err });
+    cut(cutOptions);
+    unlink(this._srcPath, (err) => {
+      if (err) throw err;
+    });
   }
 }

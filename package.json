@@ -4,10 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./dist/index.js",
+    "start": "npm run clean:audio && node ./dist/index.js",
+    "start:tsc": "npx tsc ./src/index.ts && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "sudo rm -rf node_modules package-lock.json ./temp/* ./memes_audio/*",
-    "setup": "npm i && mkdir temp memes_audio"
+    "clean": "sudo rm -rf node_modules package-lock.json",
+    "clean:dist": "rm -rf ./dist",
+    "clean:audio": "rm -rf ./dist/mp3 ./dist/tmp",
+    "watch": "npm run clean:dist && npx tsc -w"
   },
   "author": "",
   "license": "ISC",
