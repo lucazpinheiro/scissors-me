@@ -1,24 +1,17 @@
-import { ScissorsMe } from "./ScissorsMe";
+import { ScissorsMe } from "./lib/ScissorsMe";
+import { EventEmitter } from 'events';
 
-new ScissorsMe({
-  url: "https://www.youtube.com/watch?v=P6EFy2cADNM",
-  alias: "cagezinho",
-  start: 5,
-  end: 9,
-});
+const emitter = new EventEmitter();
 
-new ScissorsMe({
+emitter.on('notification', (data) => {
+  console.log(data)
+})
+
+const options = {
   url: "https://www.youtube.com/watch?v=OaeVieQRHRs",
   alias: "banido",
-  start: 9,
-  end: 13
-});
+  start: 12,
+  end: 13,
+}
 
-new ScissorsMe({
-  url: "https://www.youtube.com/watch?v=QWHEefBwdV4",
-  alias: "bruno",
-  start: 18
-});
-
-// new ScissorsMe('https://www.youtube.com/watch?v=OaeVieQRHRs', 9, 13);
-// new ScissorsMe('https://www.youtube.com/watch?v=QWHEefBwdV4', 18);
+new ScissorsMe(emitter, options);

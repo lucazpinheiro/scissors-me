@@ -3,6 +3,7 @@ import ffmpeg, { FfmpegCommandOptions } from "fluent-ffmpeg";
 ffmpeg.setFfmpegPath(path);
 
 import { existsSync, mkdirSync, unlink } from "fs";
+import { EventEmitter } from 'events';
 import { Readable } from "stream";
 import ytdl from "ytdl-core";
 import { cut } from "mp3-cutter";
@@ -15,12 +16,13 @@ interface IOptions {
 }
 
 export class ScissorsMe {
+  private event: EventEmitter;
   private options: IOptions;
   private _audioPath: string = `${__dirname}/mp3`;
   private _tmpPath: string = `${__dirname}/tmp`;
   private _srcPath: string;
 
-  constructor(options: IOptions) {
+  constructor(event: EventEmitter, options: IOptions) {
     if (!options.url || !options.alias) {
       throw new Error(`Missing ${options.url ? "ALIAS" : "URL"} parameter.`);
     }
@@ -29,6 +31,7 @@ export class ScissorsMe {
       throw new Error(`Not a valid URL: ${options.url}`);
     }
 
+    this.event = event;
     this.options = options;
     this._srcPath = `${this._tmpPath}/${options.alias}.mp3`;
     this._downloadAudio();
@@ -50,6 +53,8 @@ export class ScissorsMe {
         quality: "highestaudio",
       });
 
+      this.event.emit('notification', `Baixando ${this.options.alias}`)
+
       this._saveAudio(stream);
     } catch (error) {
       throw new Error("Erro no download");
@@ -63,6 +68,7 @@ export class ScissorsMe {
         .audioBitrate(128)
         .save(this._srcPath)
         .on("end", () => {
+          this.event.emit('notification', `${this.options.alias} foi salvo!`)
           this._audioCutter();
         });
     } catch {
@@ -81,19 +87,22 @@ export class ScissorsMe {
       [start, end] = [end, start];
     }
 
-    const cutOptions = {
+    const cutOptions: any = {
       target: `${this._audioPath}/${alias}.mp3`,
       src: this._srcPath,
-      start: start,
+      start: start
     };
 
     if (end) {
-      Object.defineProperty(cutOptions, "end", { value: end });
+      cutOptions.end = end
     }
+
+    console.log(cutOptions)
 
     cut(cutOptions);
     unlink(this._srcPath, (err: any) => {
       if (err) throw err;
     });
+    this.event.emit('notification', `${this.options.alias} foi cortado e está pronto para uso!`)
   }
 }

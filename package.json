@@ -2,14 +2,14 @@
   "name": "yt-video-downloader",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "start": "npm run clean:audio && node ./dist/index.js",
     "start:tsc": "npx tsc && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "sudo rm -rf node_modules package-lock.json",
     "clean:dist": "rm -rf ./dist",
-    "clean:audio": "rm -rf ./dist/mp3 ./dist/tmp",
+    "clean:audio": "rm -rf ./dist/lib/mp3 ./dist/lib/tmp",
     "watch": "npm run clean:dist && npx tsc -w"
   },
   "author": "",
